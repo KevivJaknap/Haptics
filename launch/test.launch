@@ -1,0 +1,10 @@
+<launch>
+
+  <node pkg="rosserial_python" type="serial_node.py" name="serial_node1" 
+        output="screen"    args="/dev/ttyACM0"/>
+
+  <arg name="port" default="tcp" />
+  <arg name="tcp_port" default="11414"/>
+  <node pkg="rosserial_python" type="serial_node.py" name="serial_node2" output="screen" args="$(arg port) $(arg tcp_port)"/>
+
+</launch>
