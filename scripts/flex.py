@@ -11,6 +11,23 @@ class Main():
         self.rate = rospy.Rate(10)
         self.res = 0.0
         self.ang = 0
+        self.res0 = 52000          # resistance at 0 degrees
+        self.res90 = 150000        # resistance at 90 degrees
         
     def convert(self):
-        pass
+        ang = int(90*(self.res-self.res0)/(self.res90-self.res0))     # linear conversion
+        self.ang = max(min(ang, 90), 0)
+        
+    def callback(self, msg):
+        self.res = msg.data
+        self.convert()
+    
+    def run(self):
+        while not rospy.is_shutdown():
+            rospy.loginfo(f"resistance={self.res}, angle={self.ang}")
+            self.pub.publish(self.ang)
+            self.rate.sleep()
+
+if __name__ == "__main__":
+    flex = Main()
+    flex.run()
