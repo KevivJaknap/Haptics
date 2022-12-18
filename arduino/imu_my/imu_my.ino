@@ -10,8 +10,8 @@
 MPU6050 mpu;
 
 #define INTERRUPT_PIN D8 
-const char* ssid     = "Vivek's iPhone";
-const char* password = "w23z6twe1a6w2";//yS79Ko9QAIkh
+const char* ssid     = "Base Station";
+const char* password = "robotics@rignitc";//yS79Ko9QAIkh
 // Set the rosserial socket server IP address
 IPAddress server(192,168,0,2);
 // Set the rosserial socket server port

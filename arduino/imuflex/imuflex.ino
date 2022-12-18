@@ -11,8 +11,8 @@
 MPU6050 mpu;
 
 #define INTERRUPT_PIN D8 
-const char* ssid     = "Vivek's iPhone";
-const char* password = "w23z6twe1a6w2";//yS79Ko9QAIkh
+const char* ssid     = "Base Station";
+const char* password = "robotics@rignitc";//yS79Ko9QAIkh
 // Set the rosserial socket server IP address
 IPAddress server(192,168,0,2);
 // Set the rosserial socket server port
@@ -22,6 +22,9 @@ ros::NodeHandle nh;
 // Make a chatter publisher
 sensor_msgs::Imu imu_msg;
 std_msgs::Float32 flex;
+const int flexPin=A0;
+const float VCC = 3.3;      // voltage at Ardunio 5V line
+const float R_DIV = 33000.0;
 ros::Publisher flexer("flex_hand", &flex);
 ros::Publisher chatter("imu_machine", &imu_msg);
 bool dmpReady = false;  // set true if DMP init was successful
@@ -45,6 +48,7 @@ void ICACHE_RAM_ATTR dmpDataReady() {
 }
 
 void setup() {
+  pinMode(flexPin, INPUT);
   Serial.begin(115200);
   Serial.print("Connecting to ");
   Serial.println(ssid);
@@ -70,6 +74,7 @@ void setup() {
 
   // Start to be polite
   nh.advertise(chatter);
+  nh.advertise(flexer);
     //Wire.begin();    
     #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
         Wire.begin();
@@ -101,7 +106,10 @@ void setup() {
 }
 
 void loop() {
-  nh.spinOnce();
+    nh.spinOnce();
+    int ADCflex = analogRead(flexPin);
+    float Vflex = ADCflex * VCC / 1023.0;
+    float Rflex = R_DIV * (VCC / Vflex - 1.0);
 
     if (!dmpReady) return;
     
@@ -170,7 +178,8 @@ void loop() {
             imu_msg.linear_acceleration.x =aaReal.x * 1/16384. * 9.80665;
             imu_msg.linear_acceleration.y =aaReal.y * 1/16384. * 9.80665;
             imu_msg.linear_acceleration.z =aaReal.z * 1/16384. * 9.80665;
-            flex.data = get_flex();
+            flex.data = Rflex;
+            Serial.println(flex.data);
             if (nh.connected()) {
                 Serial.println("Connected");
                 flexer.publish( &flex );
@@ -181,21 +190,4 @@ void loop() {
    
             delay(200);         
     }
-}
-const int flexPin=A0;
-const float VCC = 5;      // voltage at Ardunio 5V line
-const float R_DIV = 33000.0;  // resistor used to create a voltage divider
-const float flatResistance = 52000.0; // resistance when flat
-const float bendResistance = 150000.0;
-float get_flex(){
-  int ADCflex = analogRead(flexPin);
-  float Vflex = ADCflex * VCC / 1023.0;
-  float Rflex = R_DIV * (VCC / Vflex - 1.0);
-
-//  float angle = map(Rflex, flatResistance, bendResistance, 0, 90.0);
-//  if(angle > 60){
-//    return false;
-//  }
-//  return true;
-  return Rflex;
 }
