@@ -13,7 +13,7 @@ MPU6050 mpu;
 const char* ssid     = "Base Station";
 const char* password = "robotics@rignitc";//yS79Ko9QAIkh
 // Set the rosserial socket server IP address
-IPAddress server(192,168,0,2);
+IPAddress server(192,168,0,3);
 // Set the rosserial socket server port
 const uint16_t serverPort = 11414;
 

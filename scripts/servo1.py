@@ -18,8 +18,8 @@ class Main:
     def callback(self, imu_h):
         #convert imu data to angle
         z = imu_h.orientation.z
-        y = imu_h.orientation.y
-        s_angle = (125*(y-0.72) + 90)*(5/9)
+        x = imu_h.orientation.x
+        s_angle = (125*(x-0.72) + 90)*(5/9)
         self.s_angle = int(s_angle)           #stepper angle
         self.angle = int(125*(z-0.72) + 90)
         rospy.loginfo(f"stepper:{self.s_angle}")
