@@ -10,10 +10,10 @@
 MPU6050 mpu;
 
 #define INTERRUPT_PIN D8 
-const char* ssid     = "Base Station";
-const char* password = "robotics@rignitc";//yS79Ko9QAIkh
+const char* ssid     = "Infinix HOT 10S";
+const char* password = "018e4d5ae842";//yS79Ko9QAIkh
 // Set the rosserial socket server IP address
-IPAddress server(192,168,0,3);
+IPAddress server(192,168,214,233);
 // Set the rosserial socket server port
 const uint16_t serverPort = 11414;
 
